@@ -144,10 +144,16 @@ export class AutoGenerator {
           str += 'export type #TABLE#CreationAttributes = #TABLE#Attributes;\n\n';
         }
 
-        str +=
-          'export class #TABLE# extends Model<#TABLE#Attributes, #TABLE#CreationAttributes> implements #TABLE#Attributes {\n';
+        const omit = associations.omit.length > 0 ? `, { omit: '${associations.omit.join("' | '")}' }` : '';
+
+        str += `export class #TABLE# extends Model<Sequelize.InferAttributes<#TABLE#${omit}>, Sequelize.InferCreationAttributes<#TABLE#>${omit}> implements #TABLE#Attributes {\n`;
         str += this.addTypeScriptModelFields(table);
         str += '\n' + associations.str;
+        str += '\n' + this.space[1] + 'declare static associations: {';
+        associations.omit.forEach((o: string, i: number) => {
+          str += '\n' + this.space[2] + `${o}: Sequelize.Association<#TABLE#, ${associations.associations[i]}>;`;
+        });
+        str += '\n' + this.space[1] + '};';
         str += '\n' + this.space[1] + 'static initModel(sequelize: Sequelize.Sequelize): typeof #TABLE# {\n';
 
         if (this.options.useDefine) {
@@ -651,6 +657,8 @@ export class AutoGenerator {
     const sp = this.space[1];
     const needed: Record<string, Set<String>> = {};
     let str = '';
+    let omit: string[] = [];
+    let associations: string[] = [];
 
     table = this.addSchemaForRelations(table);
 
@@ -660,10 +668,12 @@ export class AutoGenerator {
           // current table is a child that belongsTo parent
           const pparent = _.upperFirst(rel.parentProp);
           str += `${sp}// ${rel.childModel} belongsTo ${rel.parentModel} via ${rel.parentId}\n`;
-          str += `${sp}${rel.parentProp}!: ${rel.parentModel};\n`;
-          str += `${sp}get${pparent}!: Sequelize.BelongsToGetAssociationMixin<${rel.parentModel}>;\n`;
-          str += `${sp}set${pparent}!: Sequelize.BelongsToSetAssociationMixin<${rel.parentModel}, ${rel.parentModel}Id>;\n`;
-          str += `${sp}create${pparent}!: Sequelize.BelongsToCreateAssociationMixin<${rel.parentModel}>;\n`;
+          str += `${sp}declare ${rel.parentProp}?: Sequelize.NonAttribute<${rel.parentModel}>;\n`;
+          omit.push(rel.parentProp);
+          associations.push(rel.parentModel);
+          str += `${sp}declare get${pparent}: Sequelize.BelongsToGetAssociationMixin<${rel.parentModel}>;\n`;
+          str += `${sp}declare set${pparent}: Sequelize.BelongsToSetAssociationMixin<${rel.parentModel}, ${rel.parentModel}Id>;\n`;
+          str += `${sp}declare create${pparent}: Sequelize.BelongsToCreateAssociationMixin<${rel.parentModel}>;\n`;
           needed[rel.parentTable] ??= new Set();
           needed[rel.parentTable].add(rel.parentModel);
           needed[rel.parentTable].add(rel.parentModel + 'Id');
@@ -673,10 +683,12 @@ export class AutoGenerator {
           if (rel.isOne) {
             // const hasModelSingular = singularize(hasModel);
             str += `${sp}// ${rel.parentModel} hasOne ${rel.childModel} via ${rel.parentId}\n`;
-            str += `${sp}${rel.childProp}!: ${rel.childModel};\n`;
-            str += `${sp}get${pchild}!: Sequelize.HasOneGetAssociationMixin<${rel.childModel}>;\n`;
-            str += `${sp}set${pchild}!: Sequelize.HasOneSetAssociationMixin<${rel.childModel}, ${rel.childModel}Id>;\n`;
-            str += `${sp}create${pchild}!: Sequelize.HasOneCreateAssociationMixin<${rel.childModel}>;\n`;
+            str += `${sp}${rel.childProp}?: Sequelize.NonAttribute<${rel.childModel}>;\n`;
+            omit.push(rel.childProp);
+            associations.push(rel.childModel);
+            str += `${sp}declare get${pchild}: Sequelize.HasOneGetAssociationMixin<${rel.childModel}>;\n`;
+            str += `${sp}declare set${pchild}: Sequelize.HasOneSetAssociationMixin<${rel.childModel}, ${rel.childModel}Id>;\n`;
+            str += `${sp}declare create${pchild}: Sequelize.HasOneCreateAssociationMixin<${rel.childModel}>;\n`;
             needed[rel.childTable].add(rel.childModel);
             needed[rel.childTable].add(`${rel.childModel}Id`);
             needed[rel.childTable].add(`${rel.childModel}CreationAttributes`);
@@ -686,17 +698,19 @@ export class AutoGenerator {
             const lur = pluralize(rel.childProp);
             const plur = _.upperFirst(lur);
             str += `${sp}// ${rel.parentModel} hasMany ${rel.childModel} via ${rel.parentId}\n`;
-            str += `${sp}${lur}!: ${rel.childModel}[];\n`;
-            str += `${sp}get${plur}!: Sequelize.HasManyGetAssociationsMixin<${hasModel}>;\n`;
-            str += `${sp}set${plur}!: Sequelize.HasManySetAssociationsMixin<${hasModel}, ${hasModel}Id>;\n`;
-            str += `${sp}add${sing}!: Sequelize.HasManyAddAssociationMixin<${hasModel}, ${hasModel}Id>;\n`;
-            str += `${sp}add${plur}!: Sequelize.HasManyAddAssociationsMixin<${hasModel}, ${hasModel}Id>;\n`;
-            str += `${sp}create${sing}!: Sequelize.HasManyCreateAssociationMixin<${hasModel}>;\n`;
-            str += `${sp}remove${sing}!: Sequelize.HasManyRemoveAssociationMixin<${hasModel}, ${hasModel}Id>;\n`;
-            str += `${sp}remove${plur}!: Sequelize.HasManyRemoveAssociationsMixin<${hasModel}, ${hasModel}Id>;\n`;
-            str += `${sp}has${sing}!: Sequelize.HasManyHasAssociationMixin<${hasModel}, ${hasModel}Id>;\n`;
-            str += `${sp}has${plur}!: Sequelize.HasManyHasAssociationsMixin<${hasModel}, ${hasModel}Id>;\n`;
-            str += `${sp}count${plur}!: Sequelize.HasManyCountAssociationsMixin;\n`;
+            str += `${sp}declare ${lur}?: Sequelize.NonAttribute<${rel.childModel}[]>;\n`;
+            omit.push(lur);
+            associations.push(rel.childModel);
+            str += `${sp}declare get${plur}: Sequelize.HasManyGetAssociationsMixin<${hasModel}>;\n`;
+            str += `${sp}declare set${plur}: Sequelize.HasManySetAssociationsMixin<${hasModel}, ${hasModel}Id>;\n`;
+            str += `${sp}declare add${sing}: Sequelize.HasManyAddAssociationMixin<${hasModel}, ${hasModel}Id>;\n`;
+            str += `${sp}declare add${plur}: Sequelize.HasManyAddAssociationsMixin<${hasModel}, ${hasModel}Id>;\n`;
+            str += `${sp}declare create${sing}: Sequelize.HasManyCreateAssociationMixin<${hasModel}>;\n`;
+            str += `${sp}declare remove${sing}: Sequelize.HasManyRemoveAssociationMixin<${hasModel}, ${hasModel}Id>;\n`;
+            str += `${sp}declare remove${plur}: Sequelize.HasManyRemoveAssociationsMixin<${hasModel}, ${hasModel}Id>;\n`;
+            str += `${sp}declare has${sing}: Sequelize.HasManyHasAssociationMixin<${hasModel}, ${hasModel}Id>;\n`;
+            str += `${sp}declare has${plur}: Sequelize.HasManyHasAssociationsMixin<${hasModel}, ${hasModel}Id>;\n`;
+            str += `${sp}declare count${plur}: Sequelize.HasManyCountAssociationsMixin;\n`;
             needed[rel.childTable].add(hasModel);
             needed[rel.childTable].add(`${hasModel}Id`);
           }
@@ -713,17 +727,19 @@ export class AutoGenerator {
           const otherModelPlural = _.upperFirst(lotherModelPlural);
           const otherTable = isParent ? rel.childTable : rel.parentTable;
           str += `${sp}// ${thisModel} belongsToMany ${otherModel} via ${rel.parentId} and ${rel.childId}\n`;
-          str += `${sp}${lotherModelPlural}!: ${otherModel}[];\n`;
-          str += `${sp}get${otherModelPlural}!: Sequelize.BelongsToManyGetAssociationsMixin<${otherModel}>;\n`;
-          str += `${sp}set${otherModelPlural}!: Sequelize.BelongsToManySetAssociationsMixin<${otherModel}, ${otherModel}Id>;\n`;
-          str += `${sp}add${otherModelSingular}!: Sequelize.BelongsToManyAddAssociationMixin<${otherModel}, ${otherModel}Id>;\n`;
-          str += `${sp}add${otherModelPlural}!: Sequelize.BelongsToManyAddAssociationsMixin<${otherModel}, ${otherModel}Id>;\n`;
-          str += `${sp}create${otherModelSingular}!: Sequelize.BelongsToManyCreateAssociationMixin<${otherModel}>;\n`;
-          str += `${sp}remove${otherModelSingular}!: Sequelize.BelongsToManyRemoveAssociationMixin<${otherModel}, ${otherModel}Id>;\n`;
-          str += `${sp}remove${otherModelPlural}!: Sequelize.BelongsToManyRemoveAssociationsMixin<${otherModel}, ${otherModel}Id>;\n`;
-          str += `${sp}has${otherModelSingular}!: Sequelize.BelongsToManyHasAssociationMixin<${otherModel}, ${otherModel}Id>;\n`;
-          str += `${sp}has${otherModelPlural}!: Sequelize.BelongsToManyHasAssociationsMixin<${otherModel}, ${otherModel}Id>;\n`;
-          str += `${sp}count${otherModelPlural}!: Sequelize.BelongsToManyCountAssociationsMixin;\n`;
+          str += `${sp}declare ${lotherModelPlural}?: Sequelize.NonAttribute<${otherModel}[]>;\n`;
+          omit.push(lotherModelPlural);
+          associations.push(otherModel);
+          str += `${sp}declare get${otherModelPlural}: Sequelize.BelongsToManyGetAssociationsMixin<${otherModel}>;\n`;
+          str += `${sp}declare set${otherModelPlural}: Sequelize.BelongsToManySetAssociationsMixin<${otherModel}, ${otherModel}Id>;\n`;
+          str += `${sp}declare add${otherModelSingular}: Sequelize.BelongsToManyAddAssociationMixin<${otherModel}, ${otherModel}Id>;\n`;
+          str += `${sp}declare add${otherModelPlural}: Sequelize.BelongsToManyAddAssociationsMixin<${otherModel}, ${otherModel}Id>;\n`;
+          str += `${sp}declare create${otherModelSingular}: Sequelize.BelongsToManyCreateAssociationMixin<${otherModel}>;\n`;
+          str += `${sp}declare remove${otherModelSingular}: Sequelize.BelongsToManyRemoveAssociationMixin<${otherModel}, ${otherModel}Id>;\n`;
+          str += `${sp}declare remove${otherModelPlural}: Sequelize.BelongsToManyRemoveAssociationsMixin<${otherModel}, ${otherModel}Id>;\n`;
+          str += `${sp}declare has${otherModelSingular}: Sequelize.BelongsToManyHasAssociationMixin<${otherModel}, ${otherModel}Id>;\n`;
+          str += `${sp}declare has${otherModelPlural}: Sequelize.BelongsToManyHasAssociationsMixin<${otherModel}, ${otherModel}Id>;\n`;
+          str += `${sp}declare count${otherModelPlural}: Sequelize.BelongsToManyCountAssociationsMixin;\n`;
           needed[otherTable] ??= new Set();
           needed[otherTable].add(otherModel);
           needed[otherTable].add(`${otherModel}Id`);
@@ -733,7 +749,7 @@ export class AutoGenerator {
     if (needed[table]) {
       delete needed[table]; // don't add import for self
     }
-    return { needed, str };
+    return { needed, str, omit, associations };
   }
 
   private addTypeScriptFields(table: string, isInterface: boolean) {
@@ -759,7 +775,10 @@ export class AutoGenerator {
       if (!this.options.skipFields || !this.options.skipFields.includes(field)) {
         const name = this.quoteName(recase(this.options.caseProp, field));
         const isOptional = this.getTypeScriptFieldOptional(table, field);
-        str += `${sp}declare ${name}${isOptional ? '?' : ''}: ${this.getTypeScriptType(table, field)};\n`;
+        const type = this.getTypeScriptType(table, field);
+        str += `${sp}declare ${name}${isOptional ? '?' : ''}: ${
+          isOptional ? 'Sequelize.CreationOptional<' + type + '>' : type
+        };\n`;
       }
     });
     return str;
