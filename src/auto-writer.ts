@@ -146,7 +146,7 @@ export class AutoWriter {
       const modelName = makeTableName(this.options.caseModel, t, this.options.singularize, this.options.lang);
       modelNames.push(modelName);
       str += `import { ${modelName} as _${modelName} } from "./${fileName}";\n`;
-      str += `import type { ${modelName}Attributes, ${modelName}CreationAttributes } from "./${fileName}";\n`;
+      // str += `import type { ${modelName}Attributes, ${modelName}CreationAttributes } from "./${fileName}";\n`;
     });
     // re-export the model classes
     str += '\nexport {\n';
@@ -156,12 +156,12 @@ export class AutoWriter {
     str += '};\n';
 
     // re-export the model attirbutes
-    str += '\nexport type {\n';
-    modelNames.forEach((m) => {
-      str += `${sp}${m}Attributes,\n`;
-      str += `${sp}${m}CreationAttributes,\n`;
-    });
-    str += '};\n\n';
+    // str += '\nexport type {\n';
+    // modelNames.forEach((m) => {
+    //   str += `${sp}${m}Attributes,\n`;
+    //   str += `${sp}${m}CreationAttributes,\n`;
+    // });
+    // str += '};\n\n';
 
     // create the initialization function
     str += 'export function initModels(sequelize: Sequelize) {\n';
