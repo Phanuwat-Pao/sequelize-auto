@@ -121,8 +121,8 @@ export class AutoGenerator {
           str += ` } from './${filename}';\n`;
         });
 
-        // str += '\nexport interface #TABLE#Attributes {\n';
-        // str += this.addTypeScriptFields(table, true) + '}\n\n';
+        str += '\nexport interface #TABLE#Attributes {\n';
+        str += this.addTypeScriptFields(table, true) + '}\n\n';
 
         const primaryKeys = this.getTypeScriptPrimaryKeys(table);
 
