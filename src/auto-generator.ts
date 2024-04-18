@@ -121,8 +121,8 @@ export class AutoGenerator {
           str += ` } from './${filename}';\n`;
         });
 
-        str += '\nexport interface #TABLE#Attributes {\n';
-        str += this.addTypeScriptFields(table, true) + '}\n\n';
+        // str += '\nexport interface #TABLE#Attributes {\n';
+        // str += this.addTypeScriptFields(table, true) + '}\n\n';
 
         const primaryKeys = this.getTypeScriptPrimaryKeys(table);
 
@@ -133,16 +133,16 @@ export class AutoGenerator {
           str += `export type #TABLE#Id = #TABLE#[#TABLE#Pk];\n`;
         }
 
-        const creationOptionalFields = this.getTypeScriptCreationOptionalFields(table);
+        // const creationOptionalFields = this.getTypeScriptCreationOptionalFields(table);
 
-        if (creationOptionalFields.length) {
-          str += `export type #TABLE#OptionalAttributes = ${creationOptionalFields
-            .map((k) => `"${recase(this.options.caseProp, k)}"`)
-            .join(' | ')};\n`;
-          str += 'export type #TABLE#CreationAttributes = Optional<#TABLE#Attributes, #TABLE#OptionalAttributes>;\n\n';
-        } else {
-          str += 'export type #TABLE#CreationAttributes = #TABLE#Attributes;\n\n';
-        }
+        // if (creationOptionalFields.length) {
+        //   str += `export type #TABLE#OptionalAttributes = ${creationOptionalFields
+        //     .map((k) => `"${recase(this.options.caseProp, k)}"`)
+        //     .join(' | ')};\n`;
+        //   str += 'export type #TABLE#CreationAttributes = Optional<#TABLE#Attributes, #TABLE#OptionalAttributes>;\n\n';
+        // } else {
+        //   str += 'export type #TABLE#CreationAttributes = #TABLE#Attributes;\n\n';
+        // }
 
         const omit = associations.omit.length > 0 ? `, { omit: '${associations.omit.join("' | '")}' }` : '';
 
