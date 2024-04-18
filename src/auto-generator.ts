@@ -146,7 +146,7 @@ export class AutoGenerator {
 
         str +=
           'export class #TABLE# extends Model<#TABLE#Attributes, #TABLE#CreationAttributes> implements #TABLE#Attributes {\n';
-        str += this.addTypeScriptFields(table, false);
+        str += this.addTypeScriptModelFields(table);
         str += '\n' + associations.str;
         str += '\n' + this.space[1] + 'static initModel(sequelize: Sequelize.Sequelize): typeof #TABLE# {\n';
 
@@ -745,7 +745,21 @@ export class AutoGenerator {
       if (!this.options.skipFields || !this.options.skipFields.includes(field)) {
         const name = this.quoteName(recase(this.options.caseProp, field));
         const isOptional = this.getTypeScriptFieldOptional(table, field);
-        str += `${sp}declare ${name}${isOptional ? '?' : notNull}: ${this.getTypeScriptType(table, field)};\n`;
+        str += `${sp}${name}${isOptional ? '?' : notNull}: ${this.getTypeScriptType(table, field)};\n`;
+      }
+    });
+    return str;
+  }
+
+  private addTypeScriptModelFields(table: string) {
+    const sp = this.space[1];
+    const fields = _.keys(this.tables[table]);
+    let str = '';
+    fields.forEach((field) => {
+      if (!this.options.skipFields || !this.options.skipFields.includes(field)) {
+        const name = this.quoteName(recase(this.options.caseProp, field));
+        const isOptional = this.getTypeScriptFieldOptional(table, field);
+        str += `${sp}declare ${name}${isOptional ? '?' : ''}: ${this.getTypeScriptType(table, field)};\n`;
       }
     });
     return str;
