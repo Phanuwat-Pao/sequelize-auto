@@ -761,9 +761,7 @@ export class AutoGenerator {
       if (!this.options.skipFields || !this.options.skipFields.includes(field)) {
         const name = this.quoteName(recase(this.options.caseProp, field));
         const isOptional = this.getTypeScriptFieldOptional(table, field);
-        str += `${sp}${name}${isOptional ? '?' : notNull}: ${this.getTypeScriptType(table, field)}${
-          isOptional ? ' | null' : ''
-        };\n`;
+        str += `${sp}${name}${isOptional ? '?' : notNull}: ${this.getTypeScriptType(table, field)};\n`;
       }
     });
     return str;
