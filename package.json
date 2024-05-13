@@ -1,5 +1,5 @@
 {
-  "name": "@repo/sequelize-auto",
+  "name": "sequelize-auto",
   "version": "0.8.7",
   "publishConfig": {
     "tag": "latest"
