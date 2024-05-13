@@ -1,3 +1,4 @@
+lib
 types
 test/models/*.js
 sample/models/*

@@ -1,5 +1,5 @@
 {
-  "name": "sequelize-auto",
+  "name": "@repo/sequelize-auto",
   "version": "0.8.7",
   "publishConfig": {
     "tag": "latest"
@@ -63,37 +63,37 @@
   "license": "MIT",
   "dependencies": {
     "lodash": "^4.17.21",
-    "mkdirp": "^1.0.4",
+    "mkdirp": "^3.0.1",
     "reserved-words": "^0.1.2",
-    "yargs": "^16.2.0"
+    "yargs": "^17.7.2"
   },
   "peerDependencies": {
     "sequelize": ">3.30.0"
   },
   "devDependencies": {
-    "@types/chai": "^4.2.17",
-    "@types/lodash": "^4.14.168",
-    "@types/mocha": "^8.2.2",
+    "@types/chai": "^4.3.14",
+    "@types/lodash": "^4.17.0",
+    "@types/mocha": "^10.0.6",
     "@types/node": "^20.12.7",
-    "@types/reserved-words": "0.1.0",
-    "chai": "^4.3.4",
-    "coveralls": "^3.1.0",
+    "@types/reserved-words": "0.1.4",
+    "chai": "^5.1.0",
+    "coveralls": "^3.1.1",
     "crlf": "^1.1.1",
     "cross-env": "^7.0.3",
-    "debug": "^4.3.1",
-    "dotenv": "^8.2.0",
-    "eslint": "^7.23.0",
-    "lcov-result-merger": "^3.1.0",
-    "mocha": "^8.3.2",
+    "debug": "^4.3.4",
+    "dotenv": "^16.4.5",
+    "eslint": "^8",
+    "lcov-result-merger": "^5.0.0",
+    "mocha": "^10.4.0",
     "mysql": "^2.18.1",
-    "mysql2": "^2.2.5",
+    "mysql2": "^3.9.7",
     "nyc": "^15.1.0",
-    "pg": "^8.5.1",
-    "pg-hstore": "^2.3.3",
-    "rimraf": "^3.0.2",
-    "sequelize": "^6.11",
-    "sqlite3": "5.0.2",
-    "tedious": "^11.0.6",
-    "typescript": "^4.2.3"
+    "pg": "^8.11.5",
+    "pg-hstore": "^2.3.4",
+    "rimraf": "^5.0.5",
+    "sequelize": "^6.37",
+    "sqlite3": "5.1.7",
+    "tedious": "^18.1.0",
+    "typescript": "^5.4.5"
   }
 }
