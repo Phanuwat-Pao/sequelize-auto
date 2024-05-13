@@ -118,7 +118,7 @@ export class AutoGenerator {
           const filename = recase(this.options.caseFile, fkTableName, this.options.singularize);
           str += 'import type { ';
           str += Array.from(set.values()).sort().join(', ');
-          str += ` } from './${filename}';\n`;
+          str += ` } from './${filename}.js';\n`;
         });
 
         str += '\nexport interface #TABLE#Attributes {\n';
