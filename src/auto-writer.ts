@@ -1,8 +1,9 @@
-import fs from 'fs';
+import * as fs from 'fs';
+
 import _ from 'lodash';
-import path from 'path';
-import util from 'util';
-import { FKSpec, TableData } from '.';
+import * as path from 'path';
+import * as util from 'util';
+import { FKSpec, TableData } from './index.js';
 import {
   AutoOptions,
   CaseFileOption,
@@ -14,8 +15,9 @@ import {
   qNameSplit,
   recase,
   Relation,
-} from './types';
-const mkdirp = require('mkdirp');
+} from './types.js';
+
+import * as mkdirp from 'mkdirp';
 
 /** Writes text into files from TableData.text, and writes init-models */
 export class AutoWriter {
@@ -212,9 +214,9 @@ export class AutoWriter {
     });
     str += `${sp}};\n`;
     str += '}\n';
-    str += 'module.exports = initModels;\n';
-    str += 'module.exports.initModels = initModels;\n';
-    str += 'module.exports.default = initModels;\n';
+    str += 'export default initModels;\n';
+    str += 'export deafult initModels;\n';
+    str += 'export deafult initModels;\n';
     return str;
   }
 

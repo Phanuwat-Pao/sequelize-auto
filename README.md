@@ -16,17 +16,17 @@ You will need to install `sequelize`; it's no longer installed by `sequelize-aut
 
 You will need to install the correct dialect binding before using sequelize-auto.
 
-Dialect | Install
----|---
-MySQL/MariaDB | `npm install sequelize mysql2`
-Postgres | `npm install sequelize pg pg-hstore`
-Sqlite | `npm install sequelize sqlite3`
-MSSQL | `npm install sequelize tedious`
-
+| Dialect       | Install                              |
+| ------------- | ------------------------------------ |
+| MySQL/MariaDB | `npm install sequelize mysql2`       |
+| Postgres      | `npm install sequelize pg pg-hstore` |
+| Sqlite        | `npm install sequelize sqlite3`      |
+| MSSQL         | `npm install sequelize tedious`      |
 
 ## Usage
 
     sequelize-auto -h <host> -d <database> -u <user> -x [password] -p [port]  --dialect [dialect] -c [/path/to/config] -o [/path/to/models] -t [tableName]
+
 ```
 Options:
     --help               Show help                                   [boolean]
@@ -88,43 +88,47 @@ Options:
 Produces a file/files such as `./models/User.js` which looks like:
 
 ```js
-module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('User', {
-    id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      primaryKey: true,
-      autoIncrement: true
+export default function (sequelize, DataTypes) {
+  return sequelize.define(
+    'User',
+    {
+      id: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        primaryKey: true,
+        autoIncrement: true,
+      },
+      username: {
+        type: DataTypes.STRING(20),
+        allowNull: true,
+      },
+      aNumber: {
+        type: DataTypes.SMALLINT,
+        allowNull: true,
+      },
+      dateAllowNullTrue: {
+        type: DataTypes.DATE,
+        allowNull: true,
+      },
+      defaultValueBoolean: {
+        type: DataTypes.BOOLEAN,
+        allowNull: true,
+        defaultValue: true,
+      },
     },
-    username: {
-      type: DataTypes.STRING(20),
-      allowNull: true
+    {
+      tableName: 'User',
     },
-    aNumber: {
-      type: DataTypes.SMALLINT,
-      allowNull: true
-    },
-    dateAllowNullTrue: {
-      type: DataTypes.DATE,
-      allowNull: true
-    },
-    defaultValueBoolean: {
-      type: DataTypes.BOOLEAN,
-      allowNull: true,
-      defaultValue: true
-    }
-  }, {
-    tableName: 'User',
-  });
-};
+  );
+}
 ```
 
 Sequelize-auto also generates an initialization file, `./models/init-models.js`, which contains the code to load each model definition into Sequelize:
 
 ```js
-var DataTypes = require("sequelize").DataTypes;
-var _User = require("./User");
-var _Product = require("./Product");
+var DataTypes = require('sequelize').DataTypes;
+var _User = require('./User');
+var _Product = require('./Product');
 
 function initModels(sequelize) {
   var User = _User(sequelize, DataTypes);
@@ -135,7 +139,7 @@ function initModels(sequelize) {
     Product,
   };
 }
-module.exports = { initModels };
+export default { initModels };
 ```
 
 This makes it easy to import all your models into Sequelize by calling `initModels(sequelize)`.
@@ -156,11 +160,11 @@ var User = require('path/to/user')(sequelize, DataTypes);
 
 ## ES6
 
-You can use the `-l es6` option to create the model definition files as ES6 classes, or `-l esm` option to create ES6 modules.  Then you would `require` or `import` the classes and call the `init(sequelize, DataTypes)` method on each class.
+You can use the `-l es6` option to create the model definition files as ES6 classes, or `-l esm` option to create ES6 modules. Then you would `require` or `import` the classes and call the `init(sequelize, DataTypes)` method on each class.
 
 ## TypeScript
 
-Add `-l ts` to cli options or `lang: 'ts'` to programmatic options.  This will generate a TypeScript class in each model file, and an `init-model.ts` file
+Add `-l ts` to cli options or `lang: 'ts'` to programmatic options. This will generate a TypeScript class in each model file, and an `init-model.ts` file
 to import and initialize all the classes.
 
 > Note that you need TypeScript **4.x** to compile the generated files.
@@ -329,7 +333,6 @@ const attr: OrderCreationAttributes = {
 const newOrder = await Order.create(attr);
 ```
 
-
 ## Configuration options
 
 For the `-c, --config` option, various JSON/configuration parameters are defined by Sequelize's `options` flag within the constructor. See the [Sequelize docs](https://sequelize.org/master/class/lib/sequelize.js~Sequelize.html#instance-constructor-constructor) for more info.
@@ -340,13 +343,13 @@ For the `-c, --config` option, various JSON/configuration parameters are defined
 const SequelizeAuto = require('sequelize-auto');
 const auto = new SequelizeAuto('database', 'user', 'pass');
 
-auto.run().then(data => {
-  console.log(data.tables);      // table and field list
+auto.run().then((data) => {
+  console.log(data.tables); // table and field list
   console.log(data.foreignKeys); // table foreign key list
-  console.log(data.indexes);     // table indexes
+  console.log(data.indexes); // table indexes
   console.log(data.hasTriggerTables); // tables that have triggers
-  console.log(data.relations);   // relationships between models
-  console.log(data.text)         // text of generated models
+  console.log(data.relations); // relationships between models
+  console.log(data.text); // text of generated models
 });
 ```
 
@@ -354,24 +357,25 @@ With options:
 
 ```js
 const auto = new SequelizeAuto('database', 'user', 'pass', {
-    host: 'localhost',
-    dialect: 'mysql'|'mariadb'|'sqlite'|'postgres'|'mssql',
-    directory: './models', // where to write files
-    port: 'port',
-    caseModel: 'c', // convert snake_case column names to camelCase field names: user_id -> userId
-    caseFile: 'c', // file names created for each model use camelCase.js not snake_case.js
-    singularize: true, // convert plural table names to singular model names
-    additional: {
-        timestamps: false
-        // ...options added to each model
-    },
-    tables: ['table1', 'table2', 'myschema.table3'] // use all tables, if omitted
-    //...
-})
+  host: 'localhost',
+  dialect: 'mysql' | 'mariadb' | 'sqlite' | 'postgres' | 'mssql',
+  directory: './models', // where to write files
+  port: 'port',
+  caseModel: 'c', // convert snake_case column names to camelCase field names: user_id -> userId
+  caseFile: 'c', // file names created for each model use camelCase.js not snake_case.js
+  singularize: true, // convert plural table names to singular model names
+  additional: {
+    timestamps: false,
+    // ...options added to each model
+  },
+  tables: ['table1', 'table2', 'myschema.table3'], // use all tables, if omitted
+  //...
+});
 ```
 
 Or you can create the `sequelize` instance first, using a [connection string](https://sequelize.org/master/manual/getting-started.html#connecting-to-a-database),
 and then pass it to SequelizeAuto:
+
 ```js
 const SequelizeAuto = require('sequelize-auto');
 const Sequelize = require('sequelize');
@@ -386,17 +390,17 @@ auto.run();
 
 ## Resources
 
- - [Changelog](https://github.com/sequelize/sequelize-auto/blob/master/CHANGELOG.md)
+- [Changelog](https://github.com/sequelize/sequelize-auto/blob/master/CHANGELOG.md)
 
 ## Testing
 
 To set up:
 
 1. Create an empty database called `sequelize_auto_test` on your database server (sqlite excepted)
-2. Create a `.env` file from `sample.env` and set your username/password/port etc.  The env is read by `test/config.js`
+2. Create a `.env` file from `sample.env` and set your username/password/port etc. The env is read by `test/config.js`
 3. Build the TypeScript from the `src` directory into the `lib` directory:
 
-    `npm run build`
+   `npm run build`
 
 Then run one of the test commands below:
 

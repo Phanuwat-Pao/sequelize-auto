@@ -1,7 +1,7 @@
-import { SequelizeAuto } from "./auto";
-import { FKSpec, FKRelation } from "./dialects/dialect-options";
-import { AutoOptions, CaseOption, TableData } from "./types";
+import { SequelizeAuto } from './auto.js';
+import { FKRelation, FKSpec } from './dialects/dialect-options.js';
+import { AutoOptions, CaseOption, TableData } from './types.js';
 
-export { SequelizeAuto, AutoOptions, TableData, CaseOption, FKSpec, FKRelation };
+export type { AutoOptions, CaseOption, FKRelation, FKSpec, SequelizeAuto, TableData };
 
 export default SequelizeAuto;

@@ -1,7 +1,7 @@
-const { AutoRelater } = require('../lib/auto-relater');
+import { AutoRelater } from '../lib/auto-relater.js';
 
 // Data from mysql version of Northwind sample, with some additional relationships.
-const northwindTableData = { 
+const northwindTableData = {
   tables: {
     order: {
       Id: {
@@ -10,7 +10,7 @@ const northwindTableData = {
         defaultValue: null,
         primaryKey: true,
         autoIncrement: true,
-        comment: null
+        comment: null,
       },
       OrderDate: {
         type: 'DATETIME',
@@ -18,7 +18,7 @@ const northwindTableData = {
         defaultValue: 'CURRENT_TIMESTAMP',
         primaryKey: false,
         autoIncrement: false,
-        comment: null
+        comment: null,
       },
       OrderNumber: {
         type: 'VARCHAR(10)',
@@ -26,7 +26,7 @@ const northwindTableData = {
         defaultValue: null,
         primaryKey: false,
         autoIncrement: false,
-        comment: null
+        comment: null,
       },
       CustomerId: {
         type: 'INT(11)',
@@ -34,7 +34,7 @@ const northwindTableData = {
         defaultValue: null,
         primaryKey: false,
         autoIncrement: false,
-        comment: null
+        comment: null,
       },
       TotalAmount: {
         type: 'DECIMAL(12,2)',
@@ -42,7 +42,7 @@ const northwindTableData = {
         defaultValue: '0.00',
         primaryKey: false,
         autoIncrement: false,
-        comment: null
+        comment: null,
       },
       Status: {
         type: "ENUM('PROCESSING','SHIPPED','UNKNOWN')",
@@ -50,8 +50,8 @@ const northwindTableData = {
         defaultValue: 'UNKNOWN',
         primaryKey: false,
         autoIncrement: false,
-        comment: null
-      }
+        comment: null,
+      },
     },
     product: {
       Id: {
@@ -60,7 +60,7 @@ const northwindTableData = {
         defaultValue: null,
         primaryKey: true,
         autoIncrement: true,
-        comment: null
+        comment: null,
       },
       ProductName: {
         type: 'VARCHAR(50)',
@@ -68,7 +68,7 @@ const northwindTableData = {
         defaultValue: null,
         primaryKey: false,
         autoIncrement: false,
-        comment: null
+        comment: null,
       },
       SupplierId: {
         type: 'INT(11)',
@@ -76,7 +76,7 @@ const northwindTableData = {
         defaultValue: null,
         primaryKey: false,
         autoIncrement: false,
-        comment: null
+        comment: null,
       },
       AltSupplierId: {
         type: 'INT(11)',
@@ -84,7 +84,7 @@ const northwindTableData = {
         defaultValue: null,
         primaryKey: false,
         autoIncrement: false,
-        comment: null
+        comment: null,
       },
       UnitPrice: {
         type: 'DECIMAL(12,2)',
@@ -92,7 +92,7 @@ const northwindTableData = {
         defaultValue: '0.00',
         primaryKey: false,
         autoIncrement: false,
-        comment: null
+        comment: null,
       },
       Package: {
         type: 'VARCHAR(30)',
@@ -100,7 +100,7 @@ const northwindTableData = {
         defaultValue: null,
         primaryKey: false,
         autoIncrement: false,
-        comment: null
+        comment: null,
       },
       IsDiscontinued: {
         type: 'BIT(1)',
@@ -108,8 +108,8 @@ const northwindTableData = {
         defaultValue: "b'0'",
         primaryKey: false,
         autoIncrement: false,
-        comment: null
-      }
+        comment: null,
+      },
     },
     related_product: {
       Id: {
@@ -118,7 +118,7 @@ const northwindTableData = {
         defaultValue: null,
         primaryKey: true,
         autoIncrement: true,
-        comment: null
+        comment: null,
       },
       ProductId: {
         type: 'INT(11)',
@@ -126,7 +126,7 @@ const northwindTableData = {
         defaultValue: null,
         primaryKey: false,
         autoIncrement: false,
-        comment: null
+        comment: null,
       },
       RelatedProductId: {
         type: 'INT(11)',
@@ -134,7 +134,7 @@ const northwindTableData = {
         defaultValue: null,
         primaryKey: false,
         autoIncrement: false,
-        comment: null
+        comment: null,
       },
     },
     order_item: {
@@ -144,7 +144,7 @@ const northwindTableData = {
         defaultValue: null,
         primaryKey: true,
         autoIncrement: true,
-        comment: null
+        comment: null,
       },
       OrderId: {
         type: 'INT(11)',
@@ -152,7 +152,7 @@ const northwindTableData = {
         defaultValue: null,
         primaryKey: false,
         autoIncrement: false,
-        comment: null
+        comment: null,
       },
       ProductId: {
         type: 'INT(11)',
@@ -160,7 +160,7 @@ const northwindTableData = {
         defaultValue: null,
         primaryKey: false,
         autoIncrement: false,
-        comment: null
+        comment: null,
       },
       UnitPrice: {
         type: 'DECIMAL(12,2)',
@@ -168,7 +168,7 @@ const northwindTableData = {
         defaultValue: '0.00',
         primaryKey: false,
         autoIncrement: false,
-        comment: null
+        comment: null,
       },
       Quantity: {
         type: 'INT(11)',
@@ -176,8 +176,8 @@ const northwindTableData = {
         defaultValue: '1',
         primaryKey: false,
         autoIncrement: false,
-        comment: null
-      }
+        comment: null,
+      },
     },
     supplier: {
       Id: {
@@ -186,7 +186,7 @@ const northwindTableData = {
         defaultValue: null,
         primaryKey: true,
         autoIncrement: true,
-        comment: null
+        comment: null,
       },
       CompanyName: {
         type: 'VARCHAR(40)',
@@ -194,7 +194,7 @@ const northwindTableData = {
         defaultValue: null,
         primaryKey: false,
         autoIncrement: false,
-        comment: null
+        comment: null,
       },
       ContactName: {
         type: 'VARCHAR(50)',
@@ -202,7 +202,7 @@ const northwindTableData = {
         defaultValue: null,
         primaryKey: false,
         autoIncrement: false,
-        comment: null
+        comment: null,
       },
       ContactTitle: {
         type: 'VARCHAR(40)',
@@ -210,7 +210,7 @@ const northwindTableData = {
         defaultValue: null,
         primaryKey: false,
         autoIncrement: false,
-        comment: null
+        comment: null,
       },
       City: {
         type: 'VARCHAR(40)',
@@ -218,7 +218,7 @@ const northwindTableData = {
         defaultValue: null,
         primaryKey: false,
         autoIncrement: false,
-        comment: null
+        comment: null,
       },
       Country: {
         type: 'VARCHAR(40)',
@@ -226,7 +226,7 @@ const northwindTableData = {
         defaultValue: null,
         primaryKey: false,
         autoIncrement: false,
-        comment: null
+        comment: null,
       },
       Phone: {
         type: 'VARCHAR(30)',
@@ -234,7 +234,7 @@ const northwindTableData = {
         defaultValue: null,
         primaryKey: false,
         autoIncrement: false,
-        comment: null
+        comment: null,
       },
       Fax: {
         type: 'VARCHAR(30)',
@@ -242,8 +242,8 @@ const northwindTableData = {
         defaultValue: null,
         primaryKey: false,
         autoIncrement: false,
-        comment: null
-      }
+        comment: null,
+      },
     },
     customer: {
       Id: {
@@ -252,7 +252,7 @@ const northwindTableData = {
         defaultValue: null,
         primaryKey: true,
         autoIncrement: true,
-        comment: null
+        comment: null,
       },
       FirstName: {
         type: 'VARCHAR(40)',
@@ -260,7 +260,7 @@ const northwindTableData = {
         defaultValue: null,
         primaryKey: false,
         autoIncrement: false,
-        comment: null
+        comment: null,
       },
       LastName: {
         type: 'VARCHAR(40)',
@@ -268,7 +268,7 @@ const northwindTableData = {
         defaultValue: null,
         primaryKey: false,
         autoIncrement: false,
-        comment: null
+        comment: null,
       },
       City: {
         type: 'VARCHAR(40)',
@@ -276,7 +276,7 @@ const northwindTableData = {
         defaultValue: null,
         primaryKey: false,
         autoIncrement: false,
-        comment: null
+        comment: null,
       },
       Country: {
         type: 'VARCHAR(40)',
@@ -284,7 +284,7 @@ const northwindTableData = {
         defaultValue: null,
         primaryKey: false,
         autoIncrement: false,
-        comment: null
+        comment: null,
       },
       Phone: {
         type: 'VARCHAR(20)',
@@ -292,8 +292,8 @@ const northwindTableData = {
         defaultValue: null,
         primaryKey: false,
         autoIncrement: false,
-        comment: null
-      }
+        comment: null,
+      },
     },
     tag: {
       Id: {
@@ -302,7 +302,7 @@ const northwindTableData = {
         defaultValue: null,
         primaryKey: true,
         autoIncrement: true,
-        comment: null
+        comment: null,
       },
       Name: {
         type: 'VARCHAR(40)',
@@ -310,7 +310,7 @@ const northwindTableData = {
         defaultValue: null,
         primaryKey: false,
         autoIncrement: false,
-        comment: null
+        comment: null,
       },
     },
     product_tag: {
@@ -320,7 +320,7 @@ const northwindTableData = {
         defaultValue: null,
         primaryKey: true,
         autoIncrement: false,
-        comment: null
+        comment: null,
       },
       TagId: {
         type: 'INT(11)',
@@ -328,7 +328,7 @@ const northwindTableData = {
         defaultValue: null,
         primaryKey: true,
         autoIncrement: false,
-        comment: null
+        comment: null,
       },
     },
     other_tag: {
@@ -338,7 +338,7 @@ const northwindTableData = {
         defaultValue: null,
         primaryKey: true,
         autoIncrement: false,
-        comment: null
+        comment: null,
       },
       TagId: {
         type: 'INT(11)',
@@ -346,7 +346,7 @@ const northwindTableData = {
         defaultValue: null,
         primaryKey: true,
         autoIncrement: false,
-        comment: null
+        comment: null,
       },
     },
   },
@@ -363,7 +363,7 @@ const northwindTableData = {
         extra: 'auto_increment',
         column_key: 'PRI',
         isPrimaryKey: true,
-        isSerialKey: true
+        isSerialKey: true,
       },
       CustomerId: {
         constraint_name: 'FK_Order_Customer',
@@ -382,9 +382,9 @@ const northwindTableData = {
           target_schema: 'northwind',
           target_table: 'customer',
           source_column: 'CustomerId',
-          target_column: 'Id'
-        }
-      }
+          target_column: 'Id',
+        },
+      },
     },
     product: {
       Id: {
@@ -398,7 +398,7 @@ const northwindTableData = {
         extra: 'auto_increment',
         column_key: 'PRI',
         isPrimaryKey: true,
-        isSerialKey: true
+        isSerialKey: true,
       },
       SupplierId: {
         constraint_name: 'FK_Product_Supplier',
@@ -417,8 +417,8 @@ const northwindTableData = {
           target_schema: 'northwind',
           target_table: 'supplier',
           source_column: 'SupplierId',
-          target_column: 'Id'
-        }
+          target_column: 'Id',
+        },
       },
       AltSupplierId: {
         constraint_name: 'FK_Product_Alt_Supplier',
@@ -437,9 +437,9 @@ const northwindTableData = {
           target_schema: 'northwind',
           target_table: 'supplier',
           source_column: 'AltSupplierId',
-          target_column: 'Id'
-        }
-      }
+          target_column: 'Id',
+        },
+      },
     },
     related_product: {
       Id: {
@@ -453,7 +453,7 @@ const northwindTableData = {
         extra: 'auto_increment',
         column_key: 'PRI',
         isPrimaryKey: true,
-        isSerialKey: true
+        isSerialKey: true,
       },
       ProductId: {
         constraint_name: 'FK_RelatedProduct_Product',
@@ -472,8 +472,8 @@ const northwindTableData = {
           target_schema: 'northwind',
           target_table: 'product',
           source_column: 'ProductId',
-          target_column: 'Id'
-        }
+          target_column: 'Id',
+        },
       },
       RelatedProductId: {
         constraint_name: 'FK_RelatedProduct_Product2',
@@ -492,8 +492,8 @@ const northwindTableData = {
           target_schema: 'northwind',
           target_table: 'product',
           source_column: 'RelatedProductId',
-          target_column: 'Id'
-        }
+          target_column: 'Id',
+        },
       },
     },
     order_item: {
@@ -508,7 +508,7 @@ const northwindTableData = {
         extra: 'auto_increment',
         column_key: 'PRI',
         isPrimaryKey: true,
-        isSerialKey: true
+        isSerialKey: true,
       },
       OrderId: {
         constraint_name: 'FK_OrderItem_Order',
@@ -527,8 +527,8 @@ const northwindTableData = {
           target_schema: 'northwind',
           target_table: 'order',
           source_column: 'OrderId',
-          target_column: 'Id'
-        }
+          target_column: 'Id',
+        },
       },
       ProductId: {
         constraint_name: 'FK_OrderItem_Product',
@@ -547,9 +547,9 @@ const northwindTableData = {
           target_schema: 'northwind',
           target_table: 'product',
           source_column: 'ProductId',
-          target_column: 'Id'
-        }
-      }
+          target_column: 'Id',
+        },
+      },
     },
     supplier: {
       Id: {
@@ -563,8 +563,8 @@ const northwindTableData = {
         extra: 'auto_increment',
         column_key: 'PRI',
         isPrimaryKey: true,
-        isSerialKey: true
-      }
+        isSerialKey: true,
+      },
     },
     customer: {
       Id: {
@@ -578,8 +578,8 @@ const northwindTableData = {
         extra: 'auto_increment',
         column_key: 'PRI',
         isPrimaryKey: true,
-        isSerialKey: true
-      }
+        isSerialKey: true,
+      },
     },
     tag: {
       Id: {
@@ -593,8 +593,8 @@ const northwindTableData = {
         extra: 'auto_increment',
         column_key: 'PRI',
         isPrimaryKey: true,
-        isSerialKey: true
-      }
+        isSerialKey: true,
+      },
     },
     product_tag: {
       ProductId: {
@@ -613,9 +613,9 @@ const northwindTableData = {
           target_schema: 'northwind',
           target_table: 'product',
           source_column: 'ProductId',
-          target_column: 'Id'
+          target_column: 'Id',
         },
-        isPrimaryKey: true
+        isPrimaryKey: true,
       },
       TagId: {
         source_table: 'product_tag',
@@ -633,10 +633,10 @@ const northwindTableData = {
           target_schema: 'northwind',
           target_table: 'tag',
           source_column: 'TagId',
-          target_column: 'Id'
+          target_column: 'Id',
         },
-        isPrimaryKey: true
-      }
+        isPrimaryKey: true,
+      },
     },
     other_tag: {
       ProductId: {
@@ -655,9 +655,9 @@ const northwindTableData = {
           target_schema: 'northwind',
           target_table: 'product',
           source_column: 'ProductId',
-          target_column: 'Id'
+          target_column: 'Id',
         },
-        isPrimaryKey: true
+        isPrimaryKey: true,
       },
       TagId: {
         source_table: 'other_tag',
@@ -675,17 +675,17 @@ const northwindTableData = {
           target_schema: 'northwind',
           target_table: 'tag',
           source_column: 'TagId',
-          target_column: 'Id'
+          target_column: 'Id',
         },
-        isPrimaryKey: true
-      }
+        isPrimaryKey: true,
+      },
     },
   },
   indexes: {
     // removed
   },
   hasTriggerTables: { customer: true },
-  relations: []
+  relations: [],
 };
 
 function buildRelatedTableData() {
@@ -694,13 +694,13 @@ function buildRelatedTableData() {
   const relater = new AutoRelater({
     caseModel: 'p',
     caseProp: 'c',
-    singularize: true
+    singularize: true,
   });
   td = relater.buildRelations(td);
   return td;
-};
+}
 
-module.exports = {
+export default {
   tableData: northwindTableData,
-  buildRelatedTableData: buildRelatedTableData
+  buildRelatedTableData: buildRelatedTableData,
 };

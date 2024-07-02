@@ -1,11 +1,11 @@
 import _ from 'lodash';
 import { Sequelize } from 'sequelize';
-import { AutoBuilder } from './auto-builder';
-import { AutoGenerator } from './auto-generator';
-import { AutoRelater } from './auto-relater';
-import { AutoWriter } from './auto-writer';
-import { Dialect, dialects } from './dialects/dialects';
-import { AutoOptions, TableData } from './types';
+import { AutoBuilder } from './auto-builder.js';
+import { AutoGenerator } from './auto-generator.js';
+import { AutoRelater } from './auto-relater.js';
+import { AutoWriter } from './auto-writer.js';
+import { Dialect, dialects } from './dialects/dialects.js';
+import { AutoOptions, TableData } from './types.js';
 
 export class SequelizeAuto {
   sequelize: Sequelize;
@@ -41,7 +41,7 @@ export class SequelizeAuto {
         closeConnectionAutomatically: true,
       },
       options || {},
-    );
+    ) as AutoOptions;
 
     if (!this.options.directory) {
       this.options.noWrite = true;
@@ -94,6 +94,4 @@ export class SequelizeAuto {
     }
   }
 }
-module.exports = SequelizeAuto;
-module.exports.SequelizeAuto = SequelizeAuto;
-module.exports.default = SequelizeAuto;
+export default SequelizeAuto;

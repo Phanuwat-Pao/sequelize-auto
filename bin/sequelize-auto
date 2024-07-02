@@ -169,7 +169,7 @@ async function readPassword() {
 
 /* eslint-disable complexity, max-statements */
 (async function () {
-  const SequelizeAuto = (await import('../index.js')).default;
+  const SequelizeAuto = (await import('../index.js')).SequelizeAuto;
   const path = (await import('path')).default;
   const readline = (await import('readline')).default;
   const _ = (await import('lodash')).default;

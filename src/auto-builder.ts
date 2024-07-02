@@ -1,6 +1,5 @@
 import _ from 'lodash';
 import { QueryInterface, QueryTypes, Sequelize } from 'sequelize';
-import { AutoOptions } from '.';
 import {
   ColumnElementType,
   ColumnPrecision,
@@ -8,9 +7,10 @@ import {
   FKRow,
   FKSpec,
   TriggerCount,
-} from './dialects/dialect-options';
-import { Dialect, dialects } from './dialects/dialects';
-import { Field, IndexSpec, Table, TableData } from './types';
+} from './dialects/dialect-options.js';
+import { Dialect, dialects } from './dialects/dialects.js';
+import { AutoOptions } from './index.js';
+import { Field, IndexSpec, Table, TableData } from './types.js';
 
 /** Queries the database and builds the tables, foreignKeys, indexes, and hasTriggerTables structures in TableData  */
 export class AutoBuilder {

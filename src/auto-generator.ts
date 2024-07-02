@@ -1,6 +1,6 @@
 import _ from 'lodash';
-import { ColumnDescription } from 'sequelize/types';
-import { DialectOptions, FKSpec } from './dialects/dialect-options';
+import { ColumnDescription } from 'sequelize';
+import { DialectOptions, FKSpec } from './dialects/dialect-options.js';
 import {
   AutoOptions,
   CaseFileOption,
@@ -18,7 +18,7 @@ import {
   singularize,
   TableData,
   TSField,
-} from './types';
+} from './types.js';
 
 /** Generates text from each table in TableData */
 export class AutoGenerator {
@@ -65,7 +65,7 @@ export class AutoGenerator {
       header += "import { DataTypes, Model, Optional } from 'sequelize';\n";
     } else if (this.options.lang === 'es6') {
       header += "const Sequelize = require('sequelize');\n";
-      header += 'module.exports = (sequelize, DataTypes) => {\n';
+      header += 'export default (sequelize, DataTypes) => {\n';
       header += sp + 'return #TABLE#.init(sequelize, DataTypes);\n';
       header += '}\n\n';
       header += 'class #TABLE# extends Sequelize.Model {\n';
@@ -87,7 +87,7 @@ export class AutoGenerator {
       }
     } else {
       header += "const Sequelize = require('sequelize');\n";
-      header += 'module.exports = function(sequelize, DataTypes) {\n';
+      header += 'export default function(sequelize, DataTypes) {\n';
       header += sp + "return sequelize.define('#TABLE#', {\n";
     }
     return header;
@@ -106,7 +106,7 @@ export class AutoGenerator {
         this.options.caseModel,
         tableNameOrig,
         this.options.singularize,
-        this.options.lang
+        this.options.lang,
       );
 
       if (this.options.lang === 'ts') {
@@ -132,17 +132,6 @@ export class AutoGenerator {
             .join(' | ')};\n`;
           str += `export type #TABLE#Id = #TABLE#[#TABLE#Pk];\n`;
         }
-
-        // const creationOptionalFields = this.getTypeScriptCreationOptionalFields(table);
-
-        // if (creationOptionalFields.length) {
-        //   str += `export type #TABLE#OptionalAttributes = ${creationOptionalFields
-        //     .map((k) => `"${recase(this.options.caseProp, k)}"`)
-        //     .join(' | ')};\n`;
-        //   str += 'export type #TABLE#CreationAttributes = Optional<#TABLE#Attributes, #TABLE#OptionalAttributes>;\n\n';
-        // } else {
-        //   str += 'export type #TABLE#CreationAttributes = #TABLE#Attributes;\n\n';
-        // }
 
         const omit = associations.omit.length > 0 ? `, { omit: '${associations.omit.join("' | '")}' }` : '';
 
@@ -267,13 +256,13 @@ export class AutoGenerator {
   private addField(table: string, field: string): string {
     // ignore Sequelize standard fields
     const additional = this.options.additional;
-    if (
-      additional &&
-      additional.timestamps !== false &&
-      (this.isTimestampField(field) || this.isParanoidField(field))
-    ) {
-      return '';
-    }
+    // if (
+    //   additional &&
+    //   additional.timestamps !== false &&
+    //   (this.isTimestampField(field) || this.isParanoidField(field))
+    // ) {
+    //   return '';
+    // }
 
     if (this.isIgnoredField(field)) {
       return '';
@@ -428,7 +417,7 @@ export class AutoGenerator {
             if (
               _.includes(
                 ['current_timestamp', 'current_date', 'current_time', 'localtime', 'localtimestamp'],
-                defaultVal.toLowerCase()
+                defaultVal.toLowerCase(),
               )
             ) {
               val_text = "Sequelize.Sequelize.literal('" + defaultVal + "')";
@@ -761,7 +750,7 @@ export class AutoGenerator {
       if (!this.options.skipFields || !this.options.skipFields.includes(field)) {
         const name = this.quoteName(recase(this.options.caseProp, field));
         const isOptional = this.getTypeScriptFieldOptional(table, field);
-        str += `${sp}${name}?: ${this.getTypeScriptType(table, field)} | null | undefined;\n`;
+        str += `${sp}${name}?: ${this.getTypeScriptType(table, field)} ${isOptional ? '| null' : ''} | undefined;\n`;
       }
     });
     return str;
@@ -777,7 +766,7 @@ export class AutoGenerator {
         const isOptional = this.getTypeScriptFieldOptional(table, field);
         const type = this.getTypeScriptType(table, field);
         str += `${sp}declare ${name}${isOptional ? '?' : ''}: ${
-          isOptional ? 'Sequelize.CreationOptional<' + type + '>' : type
+          isOptional || this.tables[table][field]['primaryKey'] ? 'Sequelize.CreationOptional<' + type + '>' : type
         };\n`;
       }
     });
@@ -880,7 +869,7 @@ export class AutoGenerator {
 
   private isNumber(fieldType: string): boolean {
     return /^(smallint|mediumint|tinyint|int|bigint|float|money|smallmoney|double|decimal|numeric|real|oid)/.test(
-      fieldType
+      fieldType,
     );
   }
 
@@ -894,7 +883,7 @@ export class AutoGenerator {
 
   private isString(fieldType: string): boolean {
     return /^(char|nchar|string|varying|varchar|nvarchar|text|longtext|mediumtext|tinytext|ntext|uuid|uniqueidentifier|date|time|inet|cidr|macaddr)/.test(
-      fieldType
+      fieldType,
     );
   }
 
