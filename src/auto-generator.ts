@@ -106,7 +106,7 @@ export class AutoGenerator {
         this.options.caseModel,
         tableNameOrig,
         this.options.singularize,
-        this.options.lang,
+        this.options.lang
       );
 
       if (this.options.lang === 'ts') {
@@ -417,7 +417,7 @@ export class AutoGenerator {
             if (
               _.includes(
                 ['current_timestamp', 'current_date', 'current_time', 'localtime', 'localtimestamp'],
-                defaultVal.toLowerCase(),
+                defaultVal.toLowerCase()
               )
             ) {
               val_text = "Sequelize.Sequelize.literal('" + defaultVal + "')";
@@ -488,17 +488,8 @@ export class AutoGenerator {
         }
         str += space[4] + `fields: [\n`;
         idx.fields.forEach((ff) => {
-          str += space[5] + `{ name: "${ff.attribute}"`;
-          if (ff.collate) {
-            str += `, collate: "${ff.collate}"`;
-          }
-          if (ff.length) {
-            str += `, length: ${ff.length}`;
-          }
-          if (ff.order && ff.order !== 'ASC') {
-            str += `, order: "${ff.order}"`;
-          }
-          str += ' },\n';
+          str += space[5] + `"${ff.attribute}"`;
+          str += ',\n';
         });
         str += space[4] + ']\n';
         str += space[3] + '},\n';
@@ -869,7 +860,7 @@ export class AutoGenerator {
 
   private isNumber(fieldType: string): boolean {
     return /^(smallint|mediumint|tinyint|int|bigint|float|money|smallmoney|double|decimal|numeric|real|oid)/.test(
-      fieldType,
+      fieldType
     );
   }
 
@@ -883,7 +874,7 @@ export class AutoGenerator {
 
   private isString(fieldType: string): boolean {
     return /^(char|nchar|string|varying|varchar|nvarchar|text|longtext|mediumtext|tinytext|ntext|uuid|uniqueidentifier|date|time|inet|cidr|macaddr)/.test(
-      fieldType,
+      fieldType
     );
   }
 
