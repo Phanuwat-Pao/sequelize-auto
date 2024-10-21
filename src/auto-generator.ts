@@ -757,7 +757,11 @@ export class AutoGenerator {
         const isOptional = this.getTypeScriptFieldOptional(table, field);
         const type = this.getTypeScriptType(table, field);
         str += `${sp}declare ${name}${isOptional ? '?' : ''}: ${
-          isOptional || this.tables[table][field]['primaryKey'] ? 'Sequelize.CreationOptional<' + type + '>' : type
+          this.tables[table][field]['primaryKey']
+            ? 'Sequelize.CreationOptional<' + type + '>'
+            : isOptional
+            ? type + ' | null'
+            : type
         };\n`;
       }
     });
